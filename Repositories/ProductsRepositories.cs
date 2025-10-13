@@ -56,7 +56,7 @@ namespace CRUDONT2030.Repositories
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString)) //database connection and data retrival logic
+                using (SqlConnection connection = new SqlConnection(connectionString)) 
                 {
                     connection.Open();
                     string sql = "SELECT* FROM  Production.Products WHERE productId = @productId";
@@ -86,6 +86,33 @@ namespace CRUDONT2030.Repositories
                 Console.WriteLine($"An error occured: {ex.Message}"); // handle exceptions
             }
             return null;
+        }
+        public void CreateProduct(Products products)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString)) //database connection and data retrival logic
+                {
+                    connection.Open();
+                    string sql = "INSERT INTO Production.Products *" +
+                        "(productName , supplierId, categoryId, unitPrice, discontinued) VALUES" +
+                        "(@ProductName, @suppierId, @categoryId, @unitPrice, @discontinued)";
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@productName", products.productName);
+                        command.Parameters.AddWithValue("@supplierId", products.supplierId);
+                        command.Parameters.AddWithValue("@categoryId", products.categoryId);
+                        command.Parameters.AddWithValue("@unitPrice", products.unitPrice);
+                        command.Parameters.AddWithValue("@discontinued", products.discontinued);
+                        command.ExecuteNonQuery(); // Execute the command 
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: "+ ex.ToString()); // handle exceptions
+            }
         }
     }
 }
