@@ -23,7 +23,7 @@ namespace CRUDONT2030.Repositories
                 using (SqlConnection connection = new SqlConnection(connectionString)) //database connection and data retrival logic
                 {
                     connection.Open(); //Open the Connection
-                    string sql = "SELECT* FROM  Production.Products ORDER BY productId DSC";
+                    string sql = "SELECT* FROM  Production.Products ORDER BY productId DESC";
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -46,7 +46,7 @@ namespace CRUDONT2030.Repositories
                 }
 
             }
-            catch(Exception)
+            catch(Exception ex)
             {
                 Console.WriteLine($"An error has occured"); // handle exceptions
             }
@@ -62,9 +62,11 @@ namespace CRUDONT2030.Repositories
                 using (SqlConnection connection = new SqlConnection(connectionString)) 
                 {
                     connection.Open();
-                    string sql = "SELECT* FROM  Production.Products WHERE productId = @productId";
+                    string sql = "SELECT* FROM Production.Products WHERE productId = @productId";
+
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
+                        command.Parameters.AddWithValue("@productId", productId);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.Read())
@@ -98,7 +100,7 @@ namespace CRUDONT2030.Repositories
                 using (SqlConnection connection = new SqlConnection(connectionString)) 
                 {
                     connection.Open();
-                    string sql = "INSERT INTO Production.Products *" +
+                    string sql = "INSERT INTO Production.Products " +
                         "(productName , supplierId, categoryId, unitPrice, discontinued) VALUES" +
                         "(@ProductName, @suppierId, @categoryId, @unitPrice, @discontinued)";
                     using (SqlCommand command = new SqlCommand(sql, connection))
@@ -126,9 +128,9 @@ namespace CRUDONT2030.Repositories
                 using (SqlConnection connection = new SqlConnection(connectionString)) 
                 {
                     connection.Open(); 
-                    string sql = "UPDATE Production.Products *" +
+                    string sql = "UPDATE Production.Products " +
                         "SET productName = @productName , supplierId = @supplierId, categoryId =@categoryId, " +
-                        "unitPrice = @UnitPrice , discontinued = @discontinued " +
+                        "unitPrice = @unitPrice , discontinued = @discontinued " +
                         "WHERE productId =@productId";
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
@@ -137,6 +139,7 @@ namespace CRUDONT2030.Repositories
                         command.Parameters.AddWithValue("@categoryId", products.categoryId);
                         command.Parameters.AddWithValue("@unitPrice", products.unitPrice);
                         command.Parameters.AddWithValue("@discontinued", products.discontinued);
+                        command.Parameters.AddWithValue("@productId", products.productId);
                         command.ExecuteNonQuery(); 
                     }
                 }
