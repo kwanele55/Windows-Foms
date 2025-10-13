@@ -13,22 +13,22 @@ namespace CRUDONT2030.Repositories
     {
         private readonly string connectionString = "Data Source=.;Initial Catalog=TSQL2025;Integrated Security=True;Trust Server Certificate=False";
 
-        public List<Products> GetAllProducts()  //method to get all products
+        //method to get all products
+        public List<Products> GetAllProductS()
         {
-            var products = new List<Products>(); //list to hold products object
-            return products; //return the list which is currently empty
+            var products = new List<Products>(); //list to hold all products objects
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString)) //database connection and data retrival logic
                 {
-                    connection.Open();
+                    connection.Open(); //Open the Connection
                     string sql = "SELECT* FROM  Production.Products ORDER BY productId DSC";
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            while (reader.Read())
+                            while (reader.Read()) // read each record
                             {
                                 Products product = new Products
                                 {
@@ -46,13 +46,15 @@ namespace CRUDONT2030.Repositories
                 }
 
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 Console.WriteLine($"An error has occured"); // handle exceptions
             }
+
             return products;
 
         }
+        // new method to get all products by productId
         public Products? GetAllProduct(int productId)
         {
             try
@@ -88,6 +90,7 @@ namespace CRUDONT2030.Repositories
             }
             return null;
         }
+        //new method to create products
         public void CreateProduct(Products products)
         {
             try
@@ -115,13 +118,14 @@ namespace CRUDONT2030.Repositories
                 Console.WriteLine("Exception: "+ ex.ToString()); 
             }
         }
+        //new method that allow to update products
         public void UpdateProduct(Products products)
         {
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString)) 
                 {
-                    connection.Open();
+                    connection.Open(); 
                     string sql = "UPDATE Production.Products *" +
                         "SET productName = @productName , supplierId = @supplierId, categoryId =@categoryId, " +
                         "unitPrice = @UnitPrice , discontinued = @discontinued " +
@@ -144,6 +148,28 @@ namespace CRUDONT2030.Repositories
             }
             
         }
-        
+        //new method to allow to delete products
+        public void DeleteProduct(int productId)
+        {
+            try
+            {
+                using(SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "DELETE FROM Production.Products WHERE productId = @productId;";
+
+                    using (SqlCommand command = new SqlCommand(sql, connection)) //SQL command to execute to replace parameters with actual values
+                    {
+                        command.Parameters.AddWithValue("@productId", productId);
+                        int rowsAffected = command.ExecuteNonQuery();
+                        Console.WriteLine($"{rowsAffected} row(s) deleted."); //Inform how many rows were deleted
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.ToString());
+            }
+        }
     }
 }
