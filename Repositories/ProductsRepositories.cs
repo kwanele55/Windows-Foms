@@ -1,5 +1,6 @@
 ﻿using CRUDONT2030.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,7 +84,7 @@ namespace CRUDONT2030.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occured: {ex.Message}"); // handle exceptions
+                Console.WriteLine($"An error occured: {ex.Message}"); 
             }
             return null;
         }
@@ -91,7 +92,7 @@ namespace CRUDONT2030.Repositories
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString)) //database connection and data retrival logic
+                using (SqlConnection connection = new SqlConnection(connectionString)) 
                 {
                     connection.Open();
                     string sql = "INSERT INTO Production.Products *" +
@@ -111,8 +112,38 @@ namespace CRUDONT2030.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception: "+ ex.ToString()); // handle exceptions
+                Console.WriteLine("Exception: "+ ex.ToString()); 
             }
         }
+        public void UpdateProduct(Products products)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString)) 
+                {
+                    connection.Open();
+                    string sql = "UPDATE Production.Products *" +
+                        "SET productName = @productName , supplierId = @supplierId, categoryId =@categoryId, " +
+                        "unitPrice = @UnitPrice , discontinued = @discontinued " +
+                        "WHERE productId =@productId";
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        command.Parameters.AddWithValue("@productName", products.productName);
+                        command.Parameters.AddWithValue("@supplierId", products.supplierId);
+                        command.Parameters.AddWithValue("@categoryId", products.categoryId);
+                        command.Parameters.AddWithValue("@unitPrice", products.unitPrice);
+                        command.Parameters.AddWithValue("@discontinued", products.discontinued);
+                        command.ExecuteNonQuery(); 
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: could not update" + ex.ToString()); 
+            }
+            
+        }
+        
     }
 }
