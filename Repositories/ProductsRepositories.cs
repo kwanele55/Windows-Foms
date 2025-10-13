@@ -46,7 +46,7 @@ namespace CRUDONT2030.Repositories
                 }
 
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 Console.WriteLine($"An error has occured"); // handle exceptions
             }
@@ -102,7 +102,7 @@ namespace CRUDONT2030.Repositories
                     connection.Open();
                     string sql = "INSERT INTO Production.Products " +
                         "(productName , supplierId, categoryId, unitPrice, discontinued) VALUES" +
-                        "(@ProductName, @suppierId, @categoryId, @unitPrice, @discontinued)";
+                        "(@ProductName, @supplierId, @categoryId, @unitPrice, @discontinued)";
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
                         command.Parameters.AddWithValue("@productName", products.productName);
