@@ -39,9 +39,59 @@ namespace CRUDONT2030
 
         }
 
-        private void ProductsTable_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void btnCreate_Click(object sender, EventArgs e)
         {
+            CreateEditForm form = new CreateEditForm(); // create an instance of the CreateEditForm
+            if (form.ShowDialog() == DialogResult.OK) // show the form as a dialog and check if the result is OK
+            {
+                ReadProducts(); // refresh the product list if a new product was added
+            }
 
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            // get the value of the first cell in the selected row
+            var val = this.ProductsTable.SelectedRows[0].Cells[0].Value.ToString();
+            //var val = this.productsTable.SelectedRows[0].Cells[0].Value.ToString(); // get the value of the first cell in the selected row
+            if (val == null || val.Length == 0) // check if the value is null or empty
+
+                return; // exit the method
+
+            int productId = int.Parse(val); // parse the value to an integer
+
+            var repo = new Repositories.ProductsRepositories(); // create an instance of the repository
+            var products = repo.GetAllProduct(productId); // get the product by ID from the database
+
+            if (products == null) return; // check if the product is null
+
+            CreateEditForm form = new CreateEditForm(); // create an instance of the CreateEditForm
+            form.EditProduct(products); // call the method to populate the form with product data for editing
+            if (form.ShowDialog() == DialogResult.OK) // show the form as a dialog and check if the result is OK
+            {
+                ReadProducts(); // refresh the product list if a product was edited
+            }
+
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // To delete a product, we will get the product ID from the selected row in the DataGridView
+            var val = this.ProductsTable.SelectedRows[0].Cells[0].Value.ToString(); // get the value of the first cell in the selected row
+            if (val == null || val.Length == 0) // check if the value is null or empty
+                return; // exit the method
+
+            int productId = int.Parse(val); // parse the value to an integer
+
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to delete this product?", "Confirm Delete"
+                , MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (dialogResult == DialogResult.No) return; // if the user clicks No, exit the method
+
+            var repo = new Repositories.ProductsRepositories(); // create an instance of the repository
+            repo.DeleteProduct(productId); // call the method to delete the product by ID from the database
+
+            ReadProducts(); // refresh the product list after deletion
         }
     }
 }
