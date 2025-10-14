@@ -14,7 +14,7 @@ namespace CRUDONT2030.Repositories
         private readonly string connectionString = "Data Source=.;Initial Catalog=TSQL2025;Integrated Security=True;Trust Server Certificate=False";
 
         //method to get all products
-        public List<Products> GetAllProductS()
+        public List<Products> GetAllProducts()
         {
             var products = new List<Products>(); //list to hold all products objects
 
